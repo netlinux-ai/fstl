@@ -26,6 +26,11 @@ App::App(int& argc, char* argv[]) : QApplication(argc, argv), window(new Window(
                                    "Start in perspective projection mode");
     parser.addOption(perspOption);
 
+    QCommandLineOption screenshotOption(QStringList() << "screenshot",
+                                        "Save screenshot to <file> and exit",
+                                        "file");
+    parser.addOption(screenshotOption);
+
     parser.addPositionalArgument("file", "STL file to open");
 
     parser.process(*this);
@@ -37,6 +42,9 @@ App::App(int& argc, char* argv[]) : QApplication(argc, argv), window(new Window(
         window->setInitialProjection(false);
     } else if (parser.isSet(perspOption)) {
         window->setInitialProjection(true);
+    }
+    if (parser.isSet(screenshotOption)) {
+        window->setScreenshotPath(parser.value(screenshotOption));
     }
 
     const QStringList positional = parser.positionalArguments();

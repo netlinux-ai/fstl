@@ -19,6 +19,7 @@ public:
     bool load_next(void);
     void setInitialView(int viewpoint);
     void setInitialProjection(bool perspective);
+    void setScreenshotPath(const QString& path);
 
 protected:
     void dragEnterEvent(QDragEnterEvent* event) override;
@@ -107,6 +108,13 @@ private:
     const static QString WINDOW_GEOM_KEY;
     const static QString RESET_TRANSFORM_ON_LOAD_KEY;
 
+    void takeScreenshotAndExit();
+    void applyPendingSettings();
+
+    int pendingViewpoint = -1;
+    bool hasPendingProjection = false;
+    bool pendingPerspective = false;
+    QString screenshotPath;
     QString current_file;
     QString lookup_folder;
     QStringList lookup_folder_files;

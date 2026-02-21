@@ -1,4 +1,5 @@
 #include <QMenuBar>
+#include <QTimer>
 
 #include "canvas.h"
 #include "loader.h"
@@ -546,6 +547,14 @@ bool Window::load_stl(const QString& filename, bool is_reload)
         reload_action->setEnabled(true);
     }
 
+    if (pendingViewpoint >= 0 || hasPendingProjection) {
+        connect(loader, &Loader::finished, this, &Window::applyPendingSettings);
+    }
+
+    if (!screenshotPath.isEmpty()) {
+        connect(loader, &Loader::finished, this, &Window::takeScreenshotAndExit);
+    }
+
     loader->start();
     return true;
 }
@@ -704,18 +713,47 @@ void Window::keyPressEvent(QKeyEvent* event)
 
 void Window::setInitialView(int viewpoint)
 {
-    canvas->common_view_change(static_cast<ViewPoint>(viewpoint));
+    pendingViewpoint = viewpoint;
 }
 
 void Window::setInitialProjection(bool persp)
 {
-    if (persp) {
-        canvas->view_perspective(Canvas::P_PERSPECTIVE, false);
-        perspective_action->setChecked(true);
-    } else {
-        canvas->view_perspective(Canvas::P_ORTHOGRAPHIC, false);
-        orthographic_action->setChecked(true);
+    hasPendingProjection = true;
+    pendingPerspective = persp;
+}
+
+void Window::applyPendingSettings()
+{
+    if (pendingViewpoint >= 0) {
+        canvas->common_view_change(static_cast<ViewPoint>(pendingViewpoint));
+        pendingViewpoint = -1;
     }
+    if (hasPendingProjection) {
+        if (pendingPerspective) {
+            canvas->view_perspective(Canvas::P_PERSPECTIVE, false);
+            perspective_action->setChecked(true);
+        } else {
+            canvas->view_perspective(Canvas::P_ORTHOGRAPHIC, false);
+            orthographic_action->setChecked(true);
+        }
+        hasPendingProjection = false;
+    }
+}
+
+void Window::setScreenshotPath(const QString& path)
+{
+    screenshotPath = path;
+}
+
+void Window::takeScreenshotAndExit()
+{
+    if (screenshotPath.isEmpty())
+        return;
+    QTimer::singleShot(200, this, [this]() {
+        const auto image = canvas->grabFramebuffer();
+        image.save(screenshotPath);
+        QApplication::quit();
+    });
 }
 
 void Window::on_fullscreen()

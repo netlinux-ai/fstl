@@ -268,8 +268,19 @@ void Canvas::paintGL()
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
     float textHeight = painter.fontInfo().pointSize();
-    if (drawAxes)
+    if (drawAxes) {
         painter.drawText(QRect(10, textHeight, width(), height()), meshInfo);
+
+        // Camera "from" direction in model space (Z up)
+        QVector3D cf(-currentTransform(2, 0),
+                     -currentTransform(2, 1),
+                     -currentTransform(2, 2));
+        float el = qRadiansToDegrees(asin(qBound(-1.0f, cf.z(), 1.0f)));
+        float az = qRadiansToDegrees(atan2(cf.x(), -cf.y()));
+        QString angleText = QStringLiteral("Az: %1\u00B0  El: %2\u00B0")
+            .arg(az, 0, 'f', 1).arg(el, 0, 'f', 1);
+        painter.drawText(10, height() - 2.5 * textHeight, angleText);
+    }
     painter.drawText(10, height() - textHeight, status);
 }
 
