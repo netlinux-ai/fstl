@@ -210,7 +210,7 @@ void Window::load_persist_settings()
 
     autoreload_action->setChecked(settings.value(AUTORELOAD_KEY, true).toBool());
 
-    bool draw_axes = settings.value(DRAW_AXES_KEY, false).toBool();
+    bool draw_axes = settings.value(DRAW_AXES_KEY, true).toBool();
     canvas->draw_axes(draw_axes);
     axes_action->setChecked(draw_axes);
 
