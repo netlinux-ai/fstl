@@ -1,15 +1,47 @@
+#include <QCommandLineParser>
 #include <QDebug>
 #include <QDir>
 #include <QFileOpenEvent>
 
 #include "app.h"
+#include "canvas.h"
 #include "window.h"
 
 App::App(int& argc, char* argv[]) : QApplication(argc, argv), window(new Window())
 {
-    if (argc > 1) {
-        const auto args = QCoreApplication::arguments();
-        QString filename = args.at(1);
+    QCommandLineParser parser;
+    parser.setApplicationDescription("A fast STL file viewer");
+    parser.addHelpOption();
+    parser.addVersionOption();
+
+    QCommandLineOption isoOption(QStringList() << "iso" << "isometric",
+                                 "Start with isometric view (Z up, Y away, X toward)");
+    parser.addOption(isoOption);
+
+    QCommandLineOption orthoOption(QStringList() << "ortho" << "orthographic",
+                                   "Start in orthographic projection mode");
+    parser.addOption(orthoOption);
+
+    QCommandLineOption perspOption("perspective",
+                                   "Start in perspective projection mode");
+    parser.addOption(perspOption);
+
+    parser.addPositionalArgument("file", "STL file to open");
+
+    parser.process(*this);
+
+    if (parser.isSet(isoOption)) {
+        window->setInitialView(isoview);
+    }
+    if (parser.isSet(orthoOption)) {
+        window->setInitialProjection(false);
+    } else if (parser.isSet(perspOption)) {
+        window->setInitialProjection(true);
+    }
+
+    const QStringList positional = parser.positionalArguments();
+    if (!positional.isEmpty()) {
+        QString filename = positional.first();
         if (filename.startsWith("~")) {
             filename.replace(0, 1, QDir::homePath());
         }

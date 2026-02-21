@@ -702,6 +702,22 @@ void Window::keyPressEvent(QKeyEvent* event)
     QMainWindow::keyPressEvent(event);
 }
 
+void Window::setInitialView(int viewpoint)
+{
+    canvas->common_view_change(static_cast<ViewPoint>(viewpoint));
+}
+
+void Window::setInitialProjection(bool persp)
+{
+    if (persp) {
+        canvas->view_perspective(Canvas::P_PERSPECTIVE, false);
+        perspective_action->setChecked(true);
+    } else {
+        canvas->view_perspective(Canvas::P_ORTHOGRAPHIC, false);
+        orthographic_action->setChecked(true);
+    }
+}
+
 void Window::on_fullscreen()
 {
     if (!this->isFullScreen()) {

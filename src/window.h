@@ -17,6 +17,8 @@ public:
     bool load_stl(const QString& filename, bool is_reload = false);
     bool load_prev(void);
     bool load_next(void);
+    void setInitialView(int viewpoint);
+    void setInitialProjection(bool perspective);
 
 protected:
     void dragEnterEvent(QDragEnterEvent* event) override;
