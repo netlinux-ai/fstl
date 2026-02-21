@@ -119,7 +119,7 @@ target_link_libraries(fstl Qt5::Widgets Qt5::Core Qt5::Gui Qt5::OpenGL ${OPENGL_
 target_compile_definitions(fstl PRIVATE -DFSTL_VERSION="${PROJECT_VERSION}")
 
 #installer information that is platform independent
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Fast .stl file viewer.")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Fast STL file viewer with CLI options for view orientation, projection mode, and batch screenshot export.")
 set(CPACK_PACKAGE_VERSION_MAJOR ${FSTL_VERSION_MAJOR})
 set(CPACK_PACKAGE_VERSION_MINOR ${FSTL_VERSION_MINOR})
 set(CPACK_PACKAGE_VERSION_PATCH ${FSTL_VERSION_PATCH})

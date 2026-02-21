@@ -18,6 +18,38 @@ the project is under 1K lines of code and should be fairly approachable.
 ![Eiffel tower](http://mattkeeter.com/projects/fstl/eiffel.png)
 (credit to [Pranav Panchal](https://grabcad.com/pranav.panchal))
 
+## Command-Line Options
+
+```
+fstl [options] [file]
+```
+
+| Option | Description |
+|--------|-------------|
+| `--iso`, `--isometric` | Start with isometric view (Z up, Y away, X toward) |
+| `--ortho`, `--orthographic` | Start in orthographic projection mode |
+| `--perspective` | Start in perspective projection mode |
+| `--view <az,el>` | Set view angle as azimuth,elevation in degrees (e.g. `--view 40,30`) |
+| `--screenshot <file>` | Save screenshot to file and exit |
+
+If no file is specified, a default sphere is shown. The axes orientation
+widget and numerical Az/El readout are displayed by default.
+
+### Examples
+
+```bash
+# Open a file in isometric view with orthographic projection
+fstl --iso --ortho model.stl
+
+# Render a screenshot at a specific angle and exit
+fstl --view 40,30 --screenshot render.png model.stl
+
+# Batch render with a script
+for f in *.stl; do
+  fstl --iso --ortho --screenshot "${f%.stl}.png" "$f"
+done
+```
+
 ## Setting `fstl` as the Default STL Viewer
 
 ### Windows
