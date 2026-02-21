@@ -26,6 +26,11 @@ App::App(int& argc, char* argv[]) : QApplication(argc, argv), window(new Window(
                                    "Start in perspective projection mode");
     parser.addOption(perspOption);
 
+    QCommandLineOption viewOption(QStringList() << "view",
+                                  "Set view angle as az,el in degrees (e.g. --view 40,30)",
+                                  "az,el");
+    parser.addOption(viewOption);
+
     QCommandLineOption screenshotOption(QStringList() << "screenshot",
                                         "Save screenshot to <file> and exit",
                                         "file");
@@ -35,7 +40,12 @@ App::App(int& argc, char* argv[]) : QApplication(argc, argv), window(new Window(
 
     parser.process(*this);
 
-    if (parser.isSet(isoOption)) {
+    if (parser.isSet(viewOption)) {
+        const auto parts = parser.value(viewOption).split(',');
+        if (parts.size() == 2) {
+            window->setInitialViewAngles(parts[0].toFloat(), parts[1].toFloat());
+        }
+    } else if (parser.isSet(isoOption)) {
         window->setInitialView(isoview);
     }
     if (parser.isSet(orthoOption)) {

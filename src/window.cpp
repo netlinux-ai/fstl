@@ -547,7 +547,7 @@ bool Window::load_stl(const QString& filename, bool is_reload)
         reload_action->setEnabled(true);
     }
 
-    if (pendingViewpoint >= 0 || hasPendingProjection) {
+    if (pendingViewpoint >= 0 || hasPendingViewAngles || hasPendingProjection) {
         connect(loader, &Loader::finished, this, &Window::applyPendingSettings);
     }
 
@@ -716,6 +716,13 @@ void Window::setInitialView(int viewpoint)
     pendingViewpoint = viewpoint;
 }
 
+void Window::setInitialViewAngles(float az, float el)
+{
+    hasPendingViewAngles = true;
+    pendingAz = az;
+    pendingEl = el;
+}
+
 void Window::setInitialProjection(bool persp)
 {
     hasPendingProjection = true;
@@ -724,7 +731,10 @@ void Window::setInitialProjection(bool persp)
 
 void Window::applyPendingSettings()
 {
-    if (pendingViewpoint >= 0) {
+    if (hasPendingViewAngles) {
+        canvas->setViewAngles(pendingAz, pendingEl);
+        hasPendingViewAngles = false;
+    } else if (pendingViewpoint >= 0) {
         canvas->common_view_change(static_cast<ViewPoint>(pendingViewpoint));
         pendingViewpoint = -1;
     }

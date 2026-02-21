@@ -18,6 +18,7 @@ public:
     bool load_prev(void);
     bool load_next(void);
     void setInitialView(int viewpoint);
+    void setInitialViewAngles(float az, float el);
     void setInitialProjection(bool perspective);
     void setScreenshotPath(const QString& path);
 
@@ -112,6 +113,8 @@ private:
     void applyPendingSettings();
 
     int pendingViewpoint = -1;
+    bool hasPendingViewAngles = false;
+    float pendingAz = 0, pendingEl = 0;
     bool hasPendingProjection = false;
     bool pendingPerspective = false;
     QString screenshotPath;

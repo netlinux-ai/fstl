@@ -29,6 +29,7 @@ public:
     void invert_zoom(bool d);
     void set_drawMode(enum DrawMode mode);
     void common_view_change(enum ViewPoint c);
+    void setViewAngles(float azDeg, float elDeg);
     void setResetTransformOnLoad(bool d);
 
     QColor getAmbientColor();

@@ -145,6 +145,19 @@ void Canvas::common_view_change(enum ViewPoint c)
     update();
 }
 
+void Canvas::setViewAngles(float azDeg, float elDeg)
+{
+    currentTransform.setToIdentity();
+    const float az = azDeg * M_PI / 180.0f;
+    const float el = elDeg * M_PI / 180.0f;
+    const float sa = sin(az), ca = cos(az);
+    const float se = sin(el), ce = cos(el);
+    currentTransform(0, 0) = -ca;    currentTransform(0, 1) = -sa;   currentTransform(0, 2) = 0;
+    currentTransform(1, 0) = -se*sa; currentTransform(1, 1) = se*ca; currentTransform(1, 2) = ce;
+    currentTransform(2, 0) = -ce*sa; currentTransform(2, 1) = ce*ca; currentTransform(2, 2) = -se;
+    update();
+}
+
 void Canvas::view_perspective(float p, bool animate)
 {
     if (animate) {
